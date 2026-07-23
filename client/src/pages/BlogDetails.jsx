@@ -10,20 +10,24 @@ function BlogDetails() {
 
   // State
   const [blog, setBlog] = useState(null);
+  const [likes, setLikes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Current User
   const currentUser = JSON.parse(localStorage.getItem("user") || "null");
 
+  
+
+  // Like Check
+  const hasLiked = likes.includes(currentUser?.id);
+
   // Fetch Blog
- const fetchBlog = async () => {
+  const fetchBlog = async () => {
   try {
     const res = await api.get(`/blogs/${id}`);
 
-    // 👇 Ye line add karni hai
-    console.log("Blog API Response:", res.data);
-
     setBlog(res.data.blog);
+    setLikes(res.data.blog.likes || []);
   } catch (error) {
     console.log(error);
   } finally {
@@ -33,7 +37,7 @@ function BlogDetails() {
 
   useEffect(() => {
     fetchBlog();
-  }, []);
+  }, [id]);
 
   // Check if logged-in user is author
   const isAuthor =
@@ -42,9 +46,24 @@ function BlogDetails() {
     (currentUser.id === blog.author?._id ||
       currentUser._id === blog.author?._id);
 
-  console.log("Current User:", currentUser);
-  console.log("Blog:", blog);
-  console.log("Is Author:", isAuthor);
+  // Like / Unlike
+  const handleLike = async () => {
+    try {
+      const res = await api.put(`/blogs/${id}/like`);
+
+      if (hasLiked) {
+        setLikes((prev) =>
+          prev.filter((userId) => userId !== currentUser.id)
+        );
+      } else {
+        setLikes((prev) => [...prev, currentUser.id]);
+      }
+
+      alert(res.data.message);
+    } catch (err) {
+      alert(err.response?.data?.message || "Something went wrong");
+    }
+  };
 
   // Delete Blog
   const handleDelete = async () => {
@@ -110,7 +129,7 @@ function BlogDetails() {
           </div>
 
           {isAuthor && (
-            <div className="flex gap-4 mb-8">
+            <div className="flex gap-4 mb-6">
               <button
                 onClick={() => navigate(`/edit/${blog._id}`)}
                 className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg"
@@ -127,9 +146,32 @@ function BlogDetails() {
             </div>
           )}
 
-          <div className="text-lg leading-9 text-gray-700 whitespace-pre-line">
-            {blog.content}
-          </div>
+          {/* Like Button */}
+          <div className="flex items-center gap-4 mb-8">
+  {currentUser ? (
+    <button
+      onClick={handleLike}
+      className={`px-6 py-2 rounded-lg text-white ${
+        hasLiked
+          ? "bg-red-600 hover:bg-red-700"
+          : "bg-pink-500 hover:bg-pink-600"
+      }`}
+    >
+      {hasLiked ? "❤️ Unlike" : "🤍 Like"}
+    </button>
+  ) : (
+    <button
+      onClick={() => navigate("/login")}
+      className="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+    >
+      Login to Like
+    </button>
+  )}
+
+  <span className="text-lg font-semibold">
+    ❤️ {likes.length} Likes
+  </span>
+</div>
 
           <CommentSection blogId={blog._id} />
         </div>

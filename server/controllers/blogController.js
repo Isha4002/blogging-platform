@@ -162,10 +162,84 @@ const deleteBlog = async (req, res) => {
   }
 };
 
+// Get My Blogs
+const getMyBlogs = async (req, res) => {
+  try {
+    console.log("Logged In User:", req.user);
+
+    const blogs = await Blog.find({ author: req.user.id })
+      .populate("author", "name email")
+      .sort({ createdAt: -1 });
+
+    console.log("Blogs Found:", blogs);
+
+    res.json({
+      success: true,
+      totalBlogs: blogs.length,
+      blogs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Like / Unlike Blog
+const likeBlog = async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
+
+    const userId = req.user.id;
+
+    const alreadyLiked = blog.likes.includes(userId);
+
+    if (alreadyLiked) {
+      blog.likes = blog.likes.filter(
+        (id) => id.toString() !== userId
+      );
+
+      await blog.save();
+
+      return res.json({
+        success: true,
+        message: "Blog unliked",
+        likes: blog.likes.length,
+      });
+    }
+
+    blog.likes.push(userId);
+
+    await blog.save();
+
+    res.json({
+      success: true,
+      message: "Blog liked",
+      likes: blog.likes.length,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createBlog,
   getBlogs,
   getBlogById,
+  likeBlog,
+
   updateBlog,
   deleteBlog,
+   getMyBlogs,
 };

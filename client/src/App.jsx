@@ -7,6 +7,7 @@ import CreateBlog from "./pages/CreateBlog";
 import EditBlog from "./pages/EditBlog";
 import BlogDetails from "./pages/BlogDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
+import MyBlogs from "./pages/MyBlogs";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+     
 
         <Route
   path="/edit/:id"
@@ -33,6 +35,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+           <Route
+  path="/my-blogs"
+  element={
+    <ProtectedRoute>
+      <MyBlogs />
+    </ProtectedRoute>
+  }
+/>
       </Routes>
     </BrowserRouter>
   );
