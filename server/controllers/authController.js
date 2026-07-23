@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Blog = require("../models/Blog");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
@@ -67,6 +68,33 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Get Profile
+const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+
+    const blogs = await Blog.find({ author: req.user.id });
+
+    const totalLikes = blogs.reduce(
+      (sum, blog) => sum + blog.likes.length,
+      0
+    );
+
+    res.json({
+      success: true,
+      user,
+      totalBlogs: blogs.length,
+      totalLikes,
+      blogs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
     // Check user
     const user = await User.findOne({ email });
 
@@ -117,4 +145,5 @@ const loginUser = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  getProfile,
 };
