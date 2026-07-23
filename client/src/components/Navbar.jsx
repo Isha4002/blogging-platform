@@ -50,6 +50,12 @@ function Navbar() {
   >
     Dashboard
   </Link>
+<Link
+    to="/profile"
+  className="hover:text-blue-600 font-medium"
+>
+  Profile
+</Link>
 </>
 
               <span className="font-semibold text-gray-700">
@@ -71,6 +77,9 @@ function Navbar() {
               >
                 Login
               </Link>
+
+              
+
 
               <Link
                 to="/register"
