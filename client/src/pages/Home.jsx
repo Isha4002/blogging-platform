@@ -8,6 +8,7 @@ import Pagination from "../components/Pagination";
 
 function Home() {
   const [blogs, setBlogs] = useState([]);
+  const [trendingBlogs, setTrendingBlogs] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,7 +25,7 @@ function Home() {
 setBlogs(res.data.blogs);
 setTotalPages(res.data.totalPages);
 
-      setBlogs(res.data.blogs);
+      
     } catch (error) {
       console.log(error);
     } finally {
@@ -32,9 +33,19 @@ setTotalPages(res.data.totalPages);
     }
   };
 
+  const fetchTrendingBlogs = async () => {
+  try {
+    const res = await api.get("/blogs/trending");
+    setTrendingBlogs(res.data.blogs);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchBlogs();
+      fetchTrendingBlogs();
     }, 300);
 
     return () => clearTimeout(timer);
@@ -135,6 +146,46 @@ setTotalPages(res.data.totalPages);
 
       </section>
 
+      {/* ================= TRENDING BLOGS ================= */}
+
+<section className="max-w-7xl mx-auto px-6 py-16">
+
+  <h2 className="text-4xl font-bold text-gray-800 mb-8">
+    🔥 Trending Blogs
+  </h2>
+
+  <div className="grid md:grid-cols-3 gap-8">
+
+    {trendingBlogs.map((blog) => (
+      <div
+        key={blog._id}
+        className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition"
+      >
+        <h3 className="text-2xl font-bold line-clamp-2">
+          {blog.title}
+        </h3>
+
+        <p className="text-gray-500 mt-2">
+          By {blog.author?.name}
+        </p>
+
+        <p className="mt-4 font-semibold text-red-500">
+          ❤️ {blog.likesCount} Likes
+        </p>
+
+        <Link
+          to={`/blog/${blog._id}`}
+          className="inline-block mt-5 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+        >
+          Read More
+        </Link>
+      </div>
+    ))}
+
+  </div>
+
+</section>
+
       {/* ================= SEARCH ================= */}
 
       <section className="-mt-10 relative z-20">
@@ -225,7 +276,7 @@ setTotalPages(res.data.totalPages);
         </div>
 
       </footer>
-
+ 
     </div>
   );
 }

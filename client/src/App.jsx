@@ -8,6 +8,7 @@ import EditBlog from "./pages/EditBlog";
 import BlogDetails from "./pages/BlogDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyBlogs from "./pages/MyBlogs";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -35,6 +36,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+  path="/dashboard"
+  element={
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  }
+/>
 
            <Route
   path="/my-blogs"

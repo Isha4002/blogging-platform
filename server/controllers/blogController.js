@@ -233,13 +233,51 @@ const likeBlog = async (req, res) => {
   }
 };
 
+// Get Trending Blogs
+// Get Trending Blogs
+const getTrendingBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.aggregate([
+      {
+        $addFields: {
+          likesCount: { $size: "$likes" },
+        },
+      },
+      {
+        $sort: {
+          likesCount: -1,
+          createdAt: -1,
+        },
+      },
+      {
+        $limit: 3,
+      },
+    ]);
+
+    await Blog.populate(blogs, {
+      path: "author",
+      select: "name",
+    });
+
+    res.json({
+      success: true,
+      blogs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createBlog,
   getBlogs,
   getBlogById,
   likeBlog,
-
   updateBlog,
   deleteBlog,
-   getMyBlogs,
+  getMyBlogs,
+  getTrendingBlogs,
 };

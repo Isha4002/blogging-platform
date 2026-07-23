@@ -36,6 +36,12 @@ function BlogCard({ blog }) {
           {blog.content}
         </p>
 
+        {/* Likes & Comments */}
+        <div className="flex items-center gap-6 mt-5 text-gray-600 font-medium">
+          <span>❤️ {blog.likes?.length || 0} Likes</span>
+          <span>💬 {blog.comments?.length || 0} Comments</span>
+        </div>
+
       </div>
 
       {/* Bottom */}
@@ -46,7 +52,6 @@ function BlogCard({ blog }) {
           className="inline-flex items-center bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
         >
           Read More
-
           <span className="ml-2">→</span>
         </Link>
 

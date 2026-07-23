@@ -36,12 +36,21 @@ function Navbar() {
 
           {token ? (
             <>
-              <Link
-                to="/create"
-                className="hover:text-blue-600 font-medium"
-              >
-                Create Blog
-              </Link>
+              <>
+  <Link
+    to="/create"
+    className="hover:text-blue-600 font-medium"
+  >
+    Create Blog
+  </Link>
+
+  <Link
+    to="/dashboard"
+    className="hover:text-blue-600 font-medium"
+  >
+    Dashboard
+  </Link>
+</>
 
               <span className="font-semibold text-gray-700">
                 Hi, {user?.name}

@@ -11,6 +11,7 @@ const {
   deleteBlog,
   getMyBlogs,
   likeBlog,
+   getTrendingBlogs,
 } = require("../controllers/blogController");
 
 // Public Routes
@@ -27,5 +28,6 @@ router.post("/", authMiddleware, createBlog);
 router.put("/:id", authMiddleware, updateBlog);
 router.delete("/:id", authMiddleware, deleteBlog);
 router.put("/:id/like", authMiddleware, likeBlog);
+router.get("/trending", getTrendingBlogs);
 
 module.exports = router;
