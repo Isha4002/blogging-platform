@@ -3,12 +3,15 @@ const router = express.Router();
 
 const authMiddleware = require("../middleware/authMiddleware");
 
-router.post("/", authMiddleware, (req, res) => {
-    res.json({
-        success: true,
-        message: "Protected route working",
-        user: req.user,
-    });
-});
+const {
+  createBlog,
+  getBlogs,
+} = require("../controllers/blogController");
+
+// Public Route
+router.get("/", getBlogs);
+
+// Protected Route
+router.post("/", authMiddleware, createBlog);
 
 module.exports = router;
