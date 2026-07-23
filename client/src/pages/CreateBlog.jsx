@@ -11,6 +11,9 @@ function CreateBlog() {
     content: "",
   });
 
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState("");
+
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -20,13 +23,35 @@ function CreateBlog() {
     });
   };
 
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    setImage(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       setLoading(true);
 
-      await api.post("/blogs", form);
+      const formData = new FormData();
+
+      formData.append("title", form.title);
+      formData.append("content", form.content);
+
+      if (image) {
+        formData.append("image", image);
+      }
+
+      await api.post("/blogs", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       alert("Blog Published Successfully!");
 
@@ -43,9 +68,7 @@ function CreateBlog() {
       <Navbar />
 
       <div className="min-h-screen bg-slate-100 flex justify-center py-10 px-4">
-
         <div className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-8">
-
           <h1 className="text-4xl font-bold mb-8">
             Create New Blog
           </h1>
@@ -66,6 +89,27 @@ function CreateBlog() {
                 required
                 className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+            </div>
+
+            <div>
+              <label className="block font-semibold mb-2">
+                Cover Image
+              </label>
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImage}
+                className="w-full border rounded-lg p-3"
+              />
+
+              {preview && (
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="mt-4 h-64 w-full object-cover rounded-lg"
+                />
+              )}
             </div>
 
             <div>
@@ -93,9 +137,7 @@ function CreateBlog() {
             </button>
 
           </form>
-
         </div>
-
       </div>
     </>
   );

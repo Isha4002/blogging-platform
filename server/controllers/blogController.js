@@ -15,6 +15,7 @@ const createBlog = async (req, res) => {
     const blog = await Blog.create({
       title,
       content,
+      image: req.file ? req.file.path : "",
       author: req.user.id,
     });
 
@@ -114,6 +115,10 @@ const updateBlog = async (req, res) => {
     blog.title = req.body.title || blog.title;
     blog.content = req.body.content || blog.content;
 
+    if (req.file) {
+      blog.image = req.file.path;
+    }
+
     await blog.save();
 
     res.json({
@@ -128,7 +133,6 @@ const updateBlog = async (req, res) => {
     });
   }
 };
-
 // Delete Blog
 const deleteBlog = async (req, res) => {
   try {

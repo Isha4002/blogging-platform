@@ -4,6 +4,16 @@ function BlogCard({ blog }) {
   return (
     <div className="bg-white rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden border border-gray-100">
 
+      {/* Cover Image */}
+      <img
+        src={
+          blog.image ||
+          "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200"
+        }
+        alt={blog.title}
+        className="w-full h-56 object-cover"
+      />
+
       {/* Top Section */}
       <div className="p-6">
 
@@ -14,7 +24,6 @@ function BlogCard({ blog }) {
 
         {/* Author */}
         <div className="flex items-center mt-3 mb-4">
-
           <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg">
             {blog.author?.name?.charAt(0).toUpperCase()}
           </div>
@@ -28,7 +37,6 @@ function BlogCard({ blog }) {
               {new Date(blog.createdAt).toLocaleDateString()}
             </p>
           </div>
-
         </div>
 
         {/* Content */}
@@ -46,7 +54,6 @@ function BlogCard({ blog }) {
 
       {/* Bottom */}
       <div className="px-6 pb-6">
-
         <Link
           to={`/blog/${blog._id}`}
           className="inline-flex items-center bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
@@ -54,7 +61,6 @@ function BlogCard({ blog }) {
           Read More
           <span className="ml-2">→</span>
         </Link>
-
       </div>
 
     </div>

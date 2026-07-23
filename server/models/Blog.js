@@ -7,21 +7,30 @@ const blogSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+
     content: {
       type: String,
       required: true,
     },
+
+    // Cover Image URL (Cloudinary)
+    image: {
+      type: String,
+      default: "",
+    },
+
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
+
     likes: [
-  {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-],
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,

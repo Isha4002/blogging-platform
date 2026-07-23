@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const authMiddleware = require("../middleware/authMiddleware");
+const upload = require("../middleware/upload");
 
 const {
   createBlog,
@@ -11,23 +12,34 @@ const {
   deleteBlog,
   getMyBlogs,
   likeBlog,
-   getTrendingBlogs,
+  getTrendingBlogs,
 } = require("../controllers/blogController");
 
 // Public Routes
 router.get("/", getBlogs);
-
-// Protected Route (MUST come before /:id)
-router.get("/my", authMiddleware, getMyBlogs);
-
-// Public Route
-router.get("/:id", getBlogById);
+router.get("/trending", getTrendingBlogs);
 
 // Protected Routes
-router.post("/", authMiddleware, createBlog);
-router.put("/:id", authMiddleware, updateBlog);
-router.delete("/:id", authMiddleware, deleteBlog);
+router.get("/my", authMiddleware, getMyBlogs);
+
+router.post(
+  "/",
+  authMiddleware,
+  upload.single("image"),
+  createBlog
+);
+
+router.put(
+  "/:id",
+  authMiddleware,
+  upload.single("image"),
+  updateBlog
+);
+
 router.put("/:id/like", authMiddleware, likeBlog);
-router.get("/trending", getTrendingBlogs);
+router.delete("/:id", authMiddleware, deleteBlog);
+
+// Keep this LAST
+router.get("/:id", getBlogById);
 
 module.exports = router;
