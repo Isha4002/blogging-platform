@@ -7,17 +7,27 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+
     email: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
     },
+
     password: {
       type: String,
       required: true,
       minlength: 6,
     },
+
+    // 🔖 Bookmarked Blogs
+    bookmarks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Blog",
+      },
+    ],
   },
   {
     timestamps: true,

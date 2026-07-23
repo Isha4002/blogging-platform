@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import MyBlogs from "./pages/MyBlogs";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import Bookmarks from "./pages/Bookmarks";
 
 function App() {
   return (
@@ -60,6 +61,15 @@ function App() {
   element={
     <ProtectedRoute>
       <MyBlogs />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/bookmarks"
+  element={
+    <ProtectedRoute>
+      <Bookmarks />
     </ProtectedRoute>
   }
 />

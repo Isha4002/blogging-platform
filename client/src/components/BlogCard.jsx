@@ -1,6 +1,38 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import api from "../services/api";
 
 function BlogCard({ blog }) {
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    fetchBookmarkStatus();
+  }, []);
+
+  const fetchBookmarkStatus = async () => {
+    try {
+      const res = await api.get("/users/bookmark-status");
+
+      const bookmarks = res.data.bookmarks || [];
+
+      setSaved(bookmarks.includes(blog._id));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleBookmark = async () => {
+    try {
+      const res = await api.put(`/users/bookmark/${blog._id}`);
+
+      setSaved(res.data.bookmarked);
+
+      alert(res.data.message);
+    } catch (err) {
+      alert(err.response?.data?.message || "Bookmark failed");
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden border border-gray-100">
 
@@ -14,10 +46,9 @@ function BlogCard({ blog }) {
         className="w-full h-56 object-cover"
       />
 
-      {/* Top Section */}
+      {/* Content */}
       <div className="p-6">
 
-        {/* Title */}
         <h2 className="text-2xl font-bold text-gray-800 line-clamp-2">
           {blog.title}
         </h2>
@@ -39,7 +70,6 @@ function BlogCard({ blog }) {
           </div>
         </div>
 
-        {/* Content */}
         <p className="text-gray-600 leading-7 line-clamp-4">
           {blog.content}
         </p>
@@ -52,15 +82,27 @@ function BlogCard({ blog }) {
 
       </div>
 
-      {/* Bottom */}
-      <div className="px-6 pb-6">
+      {/* Bottom Buttons */}
+      <div className="px-6 pb-6 flex justify-between items-center">
+
+        <button
+          onClick={handleBookmark}
+          className={`px-4 py-2 rounded-lg text-white transition ${
+            saved
+              ? "bg-green-600 hover:bg-green-700"
+              : "bg-yellow-500 hover:bg-yellow-600"
+          }`}
+        >
+          {saved ? "⭐ Saved" : "🔖 Save"}
+        </button>
+
         <Link
           to={`/blog/${blog._id}`}
-          className="inline-flex items-center bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
+          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
         >
-          Read More
-          <span className="ml-2">→</span>
+          Read More →
         </Link>
+
       </div>
 
     </div>

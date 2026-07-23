@@ -56,6 +56,14 @@ function Navbar() {
 >
   Profile
 </Link>
+
+
+<Link
+  to="/bookmarks"
+  className="hover:text-blue-600 font-medium"
+>
+  Bookmarks
+</Link>
 </>
 
               <span className="font-semibold text-gray-700">
