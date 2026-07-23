@@ -10,10 +10,13 @@ const app = express();
 
 const authRoutes = require("./routes/authRoutes");
 
+const blogRoutes = require("./routes/blogRoutes");
+
 app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/blogs", blogRoutes);
 
 app.get("/", (req, res) => {
     res.json({ message: "Blog API running..." });
