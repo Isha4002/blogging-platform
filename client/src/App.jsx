@@ -16,7 +16,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        <Route path="/edit/:id" element={<EditBlog />} />
+        <Route
+  path="/edit/:id"
+  element={
+    <ProtectedRoute>
+      <EditBlog />
+    </ProtectedRoute>
+  }
+/>
         <Route path="/blog/:id" element={<BlogDetails />} />
         <Route
           path="/create"
