@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
+import CommentSection from "../components/CommentSection";
 
 function BlogDetails() {
   const { id } = useParams();
@@ -100,6 +101,7 @@ function BlogDetails() {
             {blog.content}
 
           </div>
+          <CommentSection blogId={blog._id} />
 
         </div>
 
