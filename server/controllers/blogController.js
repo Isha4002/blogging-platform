@@ -34,13 +34,27 @@ const createBlog = async (req, res) => {
 // Get All Blogs
 const getBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find()
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || "";
+
+    const query = {
+      title: { $regex: search, $options: "i" },
+    };
+
+    const totalBlogs = await Blog.countDocuments(query);
+
+    const blogs = await Blog.find(query)
       .populate("author", "name email")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
 
     res.json({
       success: true,
-      count: blogs.length,
+      currentPage: page,
+      totalPages: Math.ceil(totalBlogs / limit),
+      totalBlogs,
       blogs,
     });
   } catch (error) {
