@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
+import RichTextEditor from "../components/RichTextEditor";
 
 function CreateBlog() {
   const navigate = useNavigate();
@@ -13,14 +14,13 @@ function CreateBlog() {
 
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState("");
-
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
+    setForm((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleImage = (e) => {
@@ -75,6 +75,7 @@ function CreateBlog() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
 
+            {/* Blog Title */}
             <div>
               <label className="block font-semibold mb-2">
                 Blog Title
@@ -91,6 +92,7 @@ function CreateBlog() {
               />
             </div>
 
+            {/* Cover Image */}
             <div>
               <label className="block font-semibold mb-2">
                 Cover Image
@@ -112,26 +114,28 @@ function CreateBlog() {
               )}
             </div>
 
+            {/* Blog Content */}
             <div>
               <label className="block font-semibold mb-2">
                 Blog Content
               </label>
 
-              <textarea
-                name="content"
+              <RichTextEditor
                 value={form.content}
-                onChange={handleChange}
-                placeholder="Write your blog here..."
-                rows={12}
-                required
-                className="w-full border rounded-lg px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(value) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    content: value,
+                  }))
+                }
               />
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition"
+              className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
             >
               {loading ? "Publishing..." : "Publish Blog"}
             </button>

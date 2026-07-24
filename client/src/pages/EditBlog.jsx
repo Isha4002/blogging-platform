@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
+import RichTextEditor from "../components/RichTextEditor";
 
 function EditBlog() {
   const { id } = useParams();
@@ -23,9 +24,6 @@ function EditBlog() {
     try {
       const res = await api.get(`/blogs/${id}`);
 
-      // 👇 Ye line add karni hai
-      console.log("Blog API Response:", res.data);
-
       setForm({
         title: res.data.blog.title,
         content: res.data.blog.content,
@@ -39,10 +37,10 @@ function EditBlog() {
   };
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
+    setForm((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -87,27 +85,44 @@ function EditBlog() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
 
-            <input
-              type="text"
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-3"
-              required
-            />
+            {/* Title */}
+            <div>
+              <label className="block font-semibold mb-2">
+                Blog Title
+              </label>
 
-            <textarea
-              name="content"
-              value={form.content}
-              onChange={handleChange}
-              rows={12}
-              className="w-full border rounded-lg px-4 py-3"
-              required
-            />
+              <input
+                type="text"
+                name="title"
+                value={form.title}
+                onChange={handleChange}
+                required
+                className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
 
+            {/* Content */}
+            <div>
+              <label className="block font-semibold mb-2">
+                Blog Content
+              </label>
+
+              <RichTextEditor
+                value={form.content}
+                onChange={(value) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    content: value,
+                  }))
+                }
+              />
+            </div>
+
+            {/* Button */}
             <button
+              type="submit"
               disabled={updating}
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700"
+              className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
               {updating ? "Updating..." : "Update Blog"}
             </button>
